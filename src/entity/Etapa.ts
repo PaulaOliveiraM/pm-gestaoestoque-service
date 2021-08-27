@@ -32,4 +32,7 @@ export class Etapa {
   @ManyToOne(() => Entrega, entrega => entrega.etapas)
   @JoinColumn()
   entrega: Entrega;
+
+  @Column({default:null})
+  observacoes?: string;
 }

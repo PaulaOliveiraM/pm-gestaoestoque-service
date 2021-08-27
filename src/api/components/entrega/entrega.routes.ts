@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, checkSchema } from "express-validator";
 import { IComponentRoutes } from "../helper";
 import { EntregaController } from "./entrega.controller";
 import { EntregaFactory } from "./entrega.factory";
@@ -25,6 +25,29 @@ export class EntregaRoutes implements IComponentRoutes<EntregaController> {
       body("enderecoDestinatario").exists(),
       (req, res, next) => this.controller.iniciarEntrega(req, res, next)
     );
-    this.router.get("/ping",(req, res, next) =>this.controller.ping(req,res,next))
+    this.router.post(
+      "/baixa",
+      body("codigoEntrega").exists(),
+      body("usuario").exists(),
+      body("latitude").exists(),
+      body("longitude").exists(),
+      body("observacao").exists(),
+      (req, res, next) => this.controller.baixarEntrega(req, res, next)
+    );
+    this.router.get(
+      "/:codigoEntrega",
+      checkSchema({
+        codigoEntrega: {
+          in: ["params", "query"],
+          errorMessage: "Parâmetro codigoEntrega inválido",
+          isInt: true,
+          toInt: true,
+        },
+      }),
+      (req, res, next) => this.controller.consultarEntrega(req, res, next)
+    );
+    this.router.get("/ping", (req, res, next) =>
+      this.controller.ping(req, res, next)
+    );
   }
 }

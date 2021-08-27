@@ -1,15 +1,14 @@
 import express from 'express'
 import { initRestRoutes } from './routes';
-// import * as swaggerUi from 'swagger-ui-express';
+import * as swaggerUi from 'swagger-ui-express';
 
 export class Server {
     private readonly _app: express.Application = express()
 
     public constructor(){
-        // const swaggerDocument = require('../../swagger.json');
+        const swaggerDocument = require('../../swagger.json');
 
-		// this._app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-        //this._app.use(express.json);
+		this._app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
         initRestRoutes(this._app)
     }
 

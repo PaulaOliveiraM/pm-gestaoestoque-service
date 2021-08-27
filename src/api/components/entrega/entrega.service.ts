@@ -1,13 +1,15 @@
-import { Cliente } from "../../../entity/Cliente";
 import { Entrega, EntregaStatus } from "../../../entity/Entrega";
 import { EtapasEntrega } from "../../../entity/Etapa";
 import { EtapaRepository } from "../etapa/etapa.repository";
 import { RastreioRepository } from "../rastreio/rastreio.repository";
 import { EntregaRepository } from "./entrega.repository";
 import { generate } from "randomstring";
+import { BaixaEntrega } from "./entrega.model";
 
 export interface IEntregaService {
   iniciarEntrega(entrega: Entrega): Promise<Entrega>;
+  consultarEntrega(codigoEntrega: Number): Promise<Entrega>;
+  baixarEntrega(baixaEntrega: BaixaEntrega): Promise<Entrega>;
 }
 
 export class EntregaService implements IEntregaService {
@@ -21,12 +23,58 @@ export class EntregaService implements IEntregaService {
     this.rastreioRep = new RastreioRepository();
   }
 
+  async  baixarEntrega(baixaEntrega: BaixaEntrega): Promise<Entrega>{
+    const entrega = await this.entregaRep.read({where: {id: baixaEntrega.codigoEntrega}, relations:["rastreios"]});
+    if (!entrega){
+      throw new Error("Entrega não localizada");
+    }
+
+    if (entrega.status == EntregaStatus.Concluida){
+      throw new Error("A entrega já encontra-se em baixa");
+    }
+
+    entrega.status = EntregaStatus.Concluida;
+    entrega.dataEntrega = new Date();
+    
+    await this.entregaRep.save(entrega);
+
+    await this.etapaRep.save({
+      data: new Date(),
+      entrega: entrega,
+      etapa:  EtapasEntrega.EntregaFinalizada,
+      latitude: baixaEntrega.latitude,
+      longitude: baixaEntrega.longitude,
+      usuarioResponsavel: baixaEntrega.usuario,
+      id: 0,
+      observacoes: baixaEntrega.observacao
+    })
+
+    if (entrega.rastreios.length > 0){
+      await this.rastreioRep.save({
+        codigoRastreio: entrega.rastreios[0].codigoRastreio,
+        dataRastreio: new Date(),
+        entrega:  entrega,
+        latitude: baixaEntrega.latitude,
+        longitude:  baixaEntrega.longitude,
+        id: 0
+      })
+    }
+
+    return  entrega;
+
+  }
+
+  async consultarEntrega(codigoEntrega: number): Promise<Entrega> {
+      const entregaLocalizada =  await this.entregaRep.read({where: {id: codigoEntrega}, relations: ["etapas","rastreios"] })
+      return entregaLocalizada;
+  }
+
   async iniciarEntrega(entrega: Entrega): Promise<Entrega> {
-    try {
+
       //TODO: pegar as coordenadas do endereço do armazem informado na entrega, para isso, acionar o serviço de geolocalização
       entrega.status = EntregaStatus.Iniciada;
       entrega.dataPrevistaEntrega = this.calcularDataPrevistaEntrega(new Date());
-      await this.entregaRep.save(entrega);
+      const entregaRetorno = await this.entregaRep.save(entrega);
       await this.etapaRep.save({
         data: new Date(),
         etapa: EtapasEntrega.EntregaIniciada,
@@ -44,11 +92,10 @@ export class EntregaService implements IEntregaService {
         latitude: 1,
         longitude: 2,
       });
-    } catch (error) {
-      throw error;
-    }
+     
 
-    return entrega;
+      return entregaRetorno;
+
   }
 
   private calcularDataPrevistaEntrega(dataInicioEntrega: Date) : Date {

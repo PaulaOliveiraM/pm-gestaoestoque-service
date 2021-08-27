@@ -1,0 +1,184 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Serviço de Gestão de Estoques",
+    "description": "API de gerenciamento de entregas armazenadas nos estoques",
+    "version": "1.0"
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/api/v1/entrega/entrada": {
+      "post": {
+        "description": "Permite dar entrada em uma determinada entrega no estoque",
+        "operationId": "iniciarEntrega",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Objeto entrada",
+            "required": true,
+            "schema": { "$ref": "#/definitions/EntradaEntrega" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": { "$ref": "#/definitions/Entrega" }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "Error: Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EntradaEntrega": {
+      "type": "object",
+      "properties": {
+        "nomeDestinatario": {
+          "type": "string"
+        },
+        "enderecoDestinatario": {
+          "type": "string"
+        },
+        "produto": {
+          "type": "string"
+        },
+        "cliente": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "default":1
+
+            }
+          }
+        },
+        "armazem": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "default":1
+            }
+          }
+        }
+      }
+    },
+    "Armazem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "endereco": {
+          "type": "string"
+        },
+        "bairro": {
+          "type": "string"
+        },
+        "cidade": {
+          "type": "string"
+        },
+        "estado": {
+          "type": "string"
+        },
+        "cep": {
+          "type": "string"
+        },
+        "telefone": {
+          "type": "string"
+        },
+        "entregas": {
+          "type": "array"
+        }
+      }
+    },
+    "Cliente": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "cnpj": {
+          "type": "string"
+        },
+        "ie": {
+          "type": "string"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "endereco": {
+          "type": "string"
+        },
+        "numero": {
+          "type": "number"
+        },
+        "complemento": {
+          "type": "string"
+        },
+        "bairro": {
+          "type": "string"
+        },
+        "cidade": {
+          "type": "string"
+        },
+        "estado": {
+          "type": "string"
+        },
+        "cep": {
+          "type": "string"
+        }
+      }
+    },
+    "Entrega": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "cliente": {
+          "$ref": "#/definitions/Cliente"
+        },
+        "armazem": {
+          "$ref": "#/definitions/Armazem"
+        },
+        "rastreios": {
+          "type": "array"
+        },
+        "etapas": {
+          "type": "array"
+        },
+        "nomeDestinatario": {
+          "type": "string"
+        },
+        "enderecoDestinatario": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "produto": {
+          "type": "string"
+        },
+        "dataPrevistaEntrega": {
+          "type": "date"
+        },
+        "dataEntrega": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}

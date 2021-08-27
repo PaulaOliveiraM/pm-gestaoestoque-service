@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { resolveModuleName } from "typescript";
 import { Entrega } from "../../../entity/Entrega";
+import { BaixaEntrega } from "./entrega.model";
 import { IEntregaService } from "./entrega.service";
 
 export class EntregaController {
@@ -34,9 +34,39 @@ export class EntregaController {
     }
   }
 
-  public async ping(req: Request, res: Response, next:NextFunction):Promise<Response|void>{
-	  res.json({ping: "ok"})
-
+  public async consultarEntrega(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const codigoEntrega = parseInt(req.params.codigoEntrega);
+      const entregaLocalizada = await this.entregaService.consultarEntrega(codigoEntrega);
+      return res.json(entregaLocalizada);
+    } catch (error) {
+      return next(error);
+    }
   }
- 
+
+  public async baixarEntrega(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void>{
+    try {
+      const baixaEntrega: BaixaEntrega = req.body;
+      const entregaBaixada = await this.entregaService.baixarEntrega(baixaEntrega);
+      return res.json(entregaBaixada);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  public async ping(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    res.json({ ping: "ok" });
+  }
 }
