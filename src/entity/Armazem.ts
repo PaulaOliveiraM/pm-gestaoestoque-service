@@ -3,6 +3,11 @@ import { Entrega } from "./Entrega";
 
 @Entity()
 export class Armazem {
+
+  constructor(id:number){
+    this.id = id;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

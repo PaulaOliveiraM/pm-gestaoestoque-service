@@ -11,6 +11,22 @@ export interface IComponentRoutes<T> {
 	initChildRoutes?(): void;
 }
 
+export enum DomainErrorCode{
+    EntregaNaoLocalizada = "EntregaNaoLocalizada",
+	EntregaJaBaixada = "EntregaJaBaixada"
+}
+
+export class DomainError {
+	public Code : DomainErrorCode;
+	public Message : string;
+
+	constructor(code: DomainErrorCode, message: string){
+		this.Code = code;
+		this.Message = message;
+	}
+}
+
+
 export abstract class AbsRepository<T> {
 	protected readonly name: string;
 	protected readonly repo: Repository<T>;

@@ -12,7 +12,7 @@ export const clientesSeed: Cliente[] = [
         ie:"306974765184",
         complemento: "",
         numero: 477, 
-        id: 0   
+        id: 1   
     },
     {
         nome: "Sabrina e Teresinha Joalheria Ltda",
@@ -25,7 +25,7 @@ export const clientesSeed: Cliente[] = [
         ie:"764810037174",
         complemento: "",
         numero: 858, 
-        id: 0   
+        id: 2   
     },
     ,
     {
@@ -39,6 +39,6 @@ export const clientesSeed: Cliente[] = [
         ie:"361633388650",
         complemento: "",
         numero: 991, 
-        id: 0   
+        id: 3   
     }
 ];

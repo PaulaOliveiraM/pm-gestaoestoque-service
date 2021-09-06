@@ -1,4 +1,7 @@
 
+import { EtapaRepository } from "../etapa/etapa.repository";
+import { RastreioRepository } from "../rastreio/rastreio.repository";
+import { EntregaRepository } from "./entrega.repository";
 import { IEntregaService, EntregaService } from "./entrega.service";
 
 export class EntregaFactory {

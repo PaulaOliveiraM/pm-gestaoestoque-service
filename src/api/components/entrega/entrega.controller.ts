@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { Entrega } from "../../../entity/Entrega";
+import { DomainError, DomainErrorCode } from "../helper";
 import { BaixaEntrega } from "./entrega.model";
 import { IEntregaService } from "./entrega.service";
 
@@ -57,7 +58,14 @@ export class EntregaController {
       const baixaEntrega: BaixaEntrega = req.body;
       const entregaBaixada = await this.entregaService.baixarEntrega(baixaEntrega);
       return res.json(entregaBaixada);
-    } catch (error) {
+    } 
+    catch (error) {
+      if (error instanceof DomainError){
+        if (error.Code == DomainErrorCode.EntregaNaoLocalizada){
+          res.statusCode = 404;
+          return res.send(error.Message);
+        }
+      }
       return next(error);
     }
   }

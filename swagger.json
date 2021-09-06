@@ -19,9 +19,65 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Objeto entrada",
+            "description": "Dados da entrega que deverá ser enviada pela transportadora",
             "required": true,
             "schema": { "$ref": "#/definitions/EntradaEntrega" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": { "$ref": "#/definitions/Entrega" }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "Error: Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/entrega/{codigoEntrega}": {
+      "get": {
+        "summary": "Localiza uma entrega pelo seu código",
+        "operationId": "consultarEntrega",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "codigoEntrega",
+            "in": "path",
+            "description": "Id da entrega a ser consultada",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entrega encontrada com sucesso",
+            "schema": { "$ref": "#/definitions/Entrega" }
+          },
+          "404": {
+            "description": "Entrega não encontrada"
+          },
+          "503": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/api/v1/entrega/baixa": {
+      "post": {
+        "description": "Permite informar a baixa de um produto que acabou de ser entregue ao cliente final.",
+        "operationId": "baixarEntrega",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Dados da entrega realizada",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BaixaEntrega" }
           }
         ],
         "responses": {
@@ -39,6 +95,91 @@
     }
   },
   "definitions": {
+    "Rastreio": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "dataRastreio": {
+          "type": "date"
+        },
+        "codigoRastreio": {
+          "type": "string"
+        },
+        "entrega": {
+          "type": "object",
+          "schema": { "$ref": "#/definitions/Entrega" }
+        }
+      }
+    },
+    "Etapa": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "etapa": {
+          "type": "string",
+          "enum": [
+            "entregaIniciada",
+            "entregaFinalizada",
+            "entregaACaminho",
+            "entregaDevolvida",
+            "entregaExtraviada"
+          ]
+        },
+        "usuarioResponsavel": {
+          "type": "string"
+        },
+        "data": {
+          "type": "date"
+        },
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "entrega": {
+          "type": "object",
+          "schema": { "$ref": "#/definitions/Entrega" }
+        },
+        "observacoes": {
+          "type": "string"
+        }
+      }
+    },
+    "BaixaEntrega": {
+      "type": "object",
+      "properties": {
+        "codigoEntrega": {
+          "type": "number",
+          "description": "Id da entrega cuja baixa deve ser registrada"
+        },
+        "usuario": {
+          "type": "string",
+          "description": "Usuário quem realizou a entrega"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Latitude do local exato onde a entrega foi registrada"
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude do local exato onde a entrega foi registrada"
+        },
+        "observacao":{
+          "type":"string"
+        }
+      }
+    },
     "EntradaEntrega": {
       "type": "object",
       "properties": {
@@ -56,8 +197,7 @@
           "properties": {
             "id": {
               "type": "number",
-              "default":1
-
+              "default": 1
             }
           }
         },
@@ -66,7 +206,7 @@
           "properties": {
             "id": {
               "type": "number",
-              "default":1
+              "default": 1
             }
           }
         }
@@ -100,7 +240,10 @@
           "type": "string"
         },
         "entregas": {
-          "type": "array"
+          "type": "array",
+          "items":{
+            "$ref":"#/definitions/Entrega"
+          }
         }
       }
     },
@@ -155,10 +298,16 @@
           "$ref": "#/definitions/Armazem"
         },
         "rastreios": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rastreio"
+          }
         },
         "etapas": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Etapa"
+          }
         },
         "nomeDestinatario": {
           "type": "string"

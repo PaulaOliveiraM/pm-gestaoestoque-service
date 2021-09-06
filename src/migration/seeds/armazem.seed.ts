@@ -8,7 +8,7 @@ export const armazemSeed: Armazem[] = [
     cidade: "Botucatu",
     estado: "SP",
     entregas: [],
-    id: 0,
+    id: 1,
     nome: "Armazém de Botucatu",
     telefone: "(11)3700-5533"
   },
@@ -19,7 +19,7 @@ export const armazemSeed: Armazem[] = [
     cidade: "Limeira",
     estado: "SP",
     entregas: [],
-    id: 0,
+    id: 2,
     nome: "Armazém de Limeira",
     telefone: "(19)2723-7439"
   },
@@ -30,7 +30,7 @@ export const armazemSeed: Armazem[] = [
     cidade: "Santa Luzia",
     estado: "MG",
     entregas: [],
-    id: 0,
+    id: 3,
     nome: "Armazém de Santa Luzia",
     telefone: "(19)2723-7439"
   },

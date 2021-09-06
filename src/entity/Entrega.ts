@@ -15,7 +15,7 @@ export enum EntregaStatus{
 export class Entrega {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id?: number;
     
     @ManyToOne(type=>Cliente)
     cliente: Cliente;
@@ -24,10 +24,10 @@ export class Entrega {
     armazem: Armazem;
 
     @OneToMany(()=>Rastreio, rastreio => rastreio.entrega)
-    rastreios: Rastreio[];
+    rastreios?: Rastreio[];
 
     @OneToMany(()=>Etapa, etapa => etapa.entrega)
-    etapas: Etapa[];
+    etapas?: Etapa[];
     
     @Column()
     nomeDestinatario: string;
@@ -36,15 +36,15 @@ export class Entrega {
     enderecoDestinatario: string;
 
     @Column()
-    status: string;
+    status?: string;
 
     @Column()
     produto: string;
 
     @CreateDateColumn({unique: false})
-    dataPrevistaEntrega: Date;
+    dataPrevistaEntrega?: Date;
 
     @CreateDateColumn({unique: false})
-    dataEntrega: Date;   
+    dataEntrega?: Date;   
 
 }
