@@ -31,6 +31,10 @@ export class EntregaController {
 
       return res.json(entregaIniciada);
     } catch (err) {
+      if (err instanceof DomainError && err.Code == DomainErrorCode.ProdutoNaoInformado){
+        res.statusCode = 400
+        return res.send(err.Message);
+      }
       return next(err);
     }
   }
@@ -45,6 +49,10 @@ export class EntregaController {
       const entregaLocalizada = await this.entregaService.consultarEntrega(codigoEntrega);
       return res.json(entregaLocalizada);
     } catch (error) {
+      if (error instanceof DomainError && error.Code == DomainErrorCode.EntregaNaoLocalizada){
+        res.statusCode = 404;
+        return res.send(error.Message);
+      }
       return next(error);
     }
   }
@@ -63,6 +71,9 @@ export class EntregaController {
       if (error instanceof DomainError){
         if (error.Code == DomainErrorCode.EntregaNaoLocalizada){
           res.statusCode = 404;
+          return res.send(error.Message);
+        }else if (error.Code == DomainErrorCode.EntregaJaBaixada){
+          res.statusCode = 400;
           return res.send(error.Message);
         }
       }

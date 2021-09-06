@@ -39,26 +39,65 @@ describe("Testando o componente Entrega", () => {
           return done();
         });
     });
+
+    it("responde com o status 500 caso o cliente informado não seja encontrado", (done) => {
+      const entregaWithWrongClientIdFake = JSON.parse(
+        JSON.stringify(entregaFake)
+      );
+
+      entregaWithWrongClientIdFake.cliente.id = 789789798;
+      factory.app
+        .post("/api/v1/entrega/entrada")
+        .send(entregaWithWrongClientIdFake)
+        .set("Content-Type", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(500, done);
+    });
+
+    it("responde com o status 500 caso o armazém informado não seja encontrado", (done) => {
+      const entregaWithWrongArmazemIdFake = JSON.parse(
+        JSON.stringify(entregaFake)
+      );
+
+      entregaWithWrongArmazemIdFake.armazem.id = 789789798;
+      factory.app
+        .post("/api/v1/entrega/entrada")
+        .send(entregaWithWrongArmazemIdFake)
+        .set("Content-Type", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(500, done);
+    });
+
+    it("responde com o status 400 caso o produto da entrega não seja informado", (done) => {
+      const entregaSemProdutoFake = JSON.parse(JSON.stringify(entregaFake));
+
+      entregaSemProdutoFake.produto = "";
+
+      factory.app
+        .post("/api/v1/entrega/entrada")
+        .send(entregaSemProdutoFake)
+        .set("Content-Type", "application/json")
+        .expect("Content-Type", "text/html; charset=utf-8")
+        .expect(400, done);
+    });
   });
 
   describe("POST entrega/saida", () => {
     it("responde com o status 200 quando a saída de uma entrega é realizada", (done) => {
+      const entrega = JSON.parse(JSON.stringify(entregaFake));
+
       // insere a entrega
       factory.app
         .post("/api/v1/entrega/entrada")
-        .send(entregaFake)
+        .send(entrega)
         .set("Content-Type", "application/json")
         .expect("Content-Type", /json/)
         .expect(200)
         .end((err, res) => {
           const entregaRetornada: Entrega = res.body;
-          entregaFake.id = entregaRetornada.id;
-          entregaFake.dataPrevistaEntrega =
-            entregaRetornada.dataPrevistaEntrega;
-          entregaFake.status = entregaRetornada.status;
 
           const baixaEntregaFake: BaixaEntrega = {
-            codigoEntrega: entregaFake.id,
+            codigoEntrega: entregaRetornada.id,
             latitude: 1,
             longitude: 2,
             observacao: "Teste observação baixa entrega",
@@ -79,6 +118,7 @@ describe("Testando o componente Entrega", () => {
             });
         });
     });
+
     it("responde com o status 404 quando uma entrega não é localizada", (done) => {
       const baixaEntregaFake: BaixaEntrega = {
         codigoEntrega: 1121212,
@@ -96,6 +136,47 @@ describe("Testando o componente Entrega", () => {
         .end((err, res) => {
           expect(res.text).eq("Entrega não localizada");
           return done();
+        });
+    });
+
+    it("responde com o status 400 quando uma entrega já foi baixada", (done) => {
+      const entrega = JSON.parse(JSON.stringify(entregaFake));
+
+      // insere a entrega
+      factory.app
+        .post("/api/v1/entrega/entrada")
+        .send(entrega)
+        .set("Content-Type", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          const entregaRetornada: Entrega = res.body;
+
+          const baixaEntregaFake: BaixaEntrega = {
+            codigoEntrega: entregaRetornada.id,
+            latitude: 1,
+            longitude: 2,
+            observacao: "Teste observação baixa entrega",
+            usuario: "entregador",
+          };
+
+          factory.app
+            .post("/api/v1/entrega/baixa")
+            .send(baixaEntregaFake)
+            .set("Content-Type", "application/json")
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .end((err, res) => {
+              const entregaRetornada: Entrega = res.body;
+              expect(entregaRetornada.status).eq(EntregaStatus.Concluida);
+              expect(entregaRetornada.dataEntrega).not.null;
+              factory.app
+                .post("/api/v1/entrega/baixa")
+                .send(baixaEntregaFake)
+                .set("Content-Type", "application/json")
+                .expect("Content-Type", "text/html; charset=utf-8")
+                .expect(400,done);
+            });
         });
     });
   });
@@ -119,10 +200,17 @@ describe("Testando o componente Entrega", () => {
           // consulta a entrega
           factory.app
             .get(`/api/v1/entrega/${entregaFake.id}`)
-            .set("Content-Type", "application/json")
             .expect("Content-Type", /json/)
             .expect(200, done);
         });
+    });
+
+    it("responde com o status 404 quando uma entrega não é localizada", (done) => {
+      // consulta a entrega
+      factory.app
+        .get("/api/v1/entrega/4654654")
+        .expect("Content-Type", "text/html; charset=utf-8")
+        .expect(404, done);
     });
   });
 });

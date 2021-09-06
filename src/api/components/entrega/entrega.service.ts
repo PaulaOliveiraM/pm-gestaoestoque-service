@@ -79,14 +79,24 @@ export class EntregaService implements IEntregaService {
       where: { id: codigoEntrega },
       relations: ["etapas", "rastreios"],
     });
+
+    if (!entregaLocalizada){
+      throw new DomainError(DomainErrorCode.EntregaNaoLocalizada, "Entrega não localizada");
+    }
+
     return entregaLocalizada;
   }
 
   async iniciarEntrega(entrega: Entrega): Promise<Entrega> {
-    //TODO: pegar as coordenadas do endereço do armazem informado na entrega, para isso, acionar o serviço de geolocalização
+    
+    if (!entrega.produto){
+      throw new DomainError(DomainErrorCode.ProdutoNaoInformado, "O produto da entrega não foi informado.");
+    }
+    
     entrega.status = EntregaStatus.Iniciada;
     entrega.dataPrevistaEntrega = this.calcularDataPrevistaEntrega(new Date());
     const entregaRetorno = await this.entregaRep.save(entrega);
+
     await this.etapaRep.save({
       data: new Date(),
       etapa: EtapasEntrega.EntregaIniciada,
@@ -96,6 +106,7 @@ export class EntregaService implements IEntregaService {
       entrega: entrega,
       id: 0,
     });
+    
     await this.rastreioRep.save({
       codigoRastreio: generate(10),
       dataRastreio: new Date(),

@@ -13,7 +13,8 @@ export interface IComponentRoutes<T> {
 
 export enum DomainErrorCode{
     EntregaNaoLocalizada = "EntregaNaoLocalizada",
-	EntregaJaBaixada = "EntregaJaBaixada"
+	EntregaJaBaixada = "EntregaJaBaixada",
+	ProdutoNaoInformado = "ProdutoNaoInformado"
 }
 
 export class DomainError {
