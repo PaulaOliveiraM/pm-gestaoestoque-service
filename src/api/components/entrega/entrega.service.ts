@@ -5,7 +5,6 @@ import { RastreioRepository } from "../rastreio/rastreio.repository";
 import { EntregaRepository } from "./entrega.repository";
 import { generate } from "randomstring";
 import { BaixaEntrega } from "./entrega.model";
-import { EntityRepository } from "typeorm";
 import { DomainError, DomainErrorCode } from "../helper";
 
 export interface IEntregaService {

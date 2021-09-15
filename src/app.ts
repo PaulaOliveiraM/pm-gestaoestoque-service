@@ -34,14 +34,3 @@ import {Connection, createConnection} from "typeorm";
 		console.log(err.stack);
 	}
 })();
-
-
-/**
- * TODO: 
- * 	1- Implementar todas as entidades com os seus respectivos relacionamentos - OK
- *  2- Criar os repositories e services necessários para implementar os endpoints: /entrega/entrada (post) - OK, /entrega/<codigoEntrega> (get) - OK, (post) /entrega/baixa - OK
- * 	   de preferência fazer a implementação dos repositories conforme os endpoints vão sendo montados.
- *  3- Implementar o swagger - Falta documentar as rotas corretamente, customizar o body dos requests
- *  4- Implementar os testes
- * 
- */
