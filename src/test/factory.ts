@@ -60,6 +60,6 @@ export class TestFactory {
     await this._connection.runMigrations();
 
     this._app = new Server().app;
-    this._server = createServer(this._app).listen(env.NODE_PORT);
+    this._server = createServer(this._app).listen(env.NODE_PORT_ESTOQUE_SERVICE);
   }
 }

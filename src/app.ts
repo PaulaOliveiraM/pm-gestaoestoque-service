@@ -20,10 +20,10 @@ import {Connection, createConnection} from "typeorm";
 
 
 		// Start express server
-		server.listen(env.NODE_PORT);
+		server.listen(env.NODE_PORT_ESTOQUE_SERVICE);
 
 		server.on('listening', () => {
-			console.log(`node server is listening on port ${env.NODE_PORT} in development mode`);
+			console.log(`node server is listening on port ${env.NODE_PORT_ESTOQUE_SERVICE} in development mode`);
 		});
 
 		server.on('close', () => {
