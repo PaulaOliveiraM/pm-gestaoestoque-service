@@ -1,10 +1,10 @@
-{
+module.exports = {
    "type": "mysql",
    "host": "localhost",
-   "port": 3307,
-   "username": "app",
-   "password": "K[u}7YgkwZ",
-   "database": "estoqueDb",
+   "port": process.env.DATABASE_PORT,
+   "username": process.env.DATABASE_USERNAME,
+   "password":  process.env.DATABASE_PASSWORD,
+   "database":  process.env.DATABASE_NAME,
    "synchronize": true,
    "logging": false,
    "entities": [
