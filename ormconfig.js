@@ -1,3 +1,6 @@
+const path = require('path');
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
    "type": "mysql",
    "host": "localhost",
@@ -8,17 +11,17 @@ module.exports = {
    "synchronize": true,
    "logging": false,
    "entities": [
-      "src/entity/**/*.ts"
+      isProduction ? path.join(__dirname, "/build/src/entity/*{.ts,.js}"): "src/entity/**/*.ts"
    ],
    "migrations": [
-      "src/migration/**/*.ts"
+      isProduction ? path.join(__dirname, "/build/src/migration/*{.ts,.js}"): "src/migration/**/*.ts"
    ],
    "subscribers": [
-      "src/subscriber/**/*.ts"
+      isProduction ? path.join(__dirname, "/build/src/subscriber/*{.ts,.js}"):  "src/subscriber/**/*.ts"
    ],
    "cli": {
-      "entitiesDir": "src/entity",
-      "migrationsDir": "src/migration",
-      "subscribersDir": "src/subscriber"
+      "entitiesDir":  isProduction ? path.join(__dirname, "/build/src/entity/*{.ts,.js}"):  "src/entity",
+      "migrationsDir": isProduction ? path.join(__dirname, "/build/src/migration/*{.ts,.js}"): "src/migration",
+      "subscribersDir":isProduction ? path.join(__dirname, "/build/src/subscriber/*{.ts,.js}"): "src/subscriber"
    }
 }

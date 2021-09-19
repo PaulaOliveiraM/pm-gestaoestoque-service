@@ -23,7 +23,7 @@ import {Connection, createConnection} from "typeorm";
 		server.listen(env.NODE_PORT_ESTOQUE_SERVICE);
 
 		server.on('listening', () => {
-			console.log(`node server is listening on port ${env.NODE_PORT_ESTOQUE_SERVICE} in development mode`);
+			console.log(`node server is listening on port ${env.NODE_PORT_ESTOQUE_SERVICE} in ${env.NODE_ENV} mode`);
 		});
 
 		server.on('close', () => {
