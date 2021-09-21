@@ -7,12 +7,13 @@ import {Connection, createConnection} from "typeorm";
 
 (async function main() {
 	try {
-
+		let connection: Connection;
         // Connect db
-        const connection: Connection = await createConnection();
+		if (env.INIT_MIGRATION){
+			connection = await createConnection();
 
-		await connection.runMigrations();
-
+			await connection.runMigrations();
+		}
 		// Init express server
 		const app: express.Application = new Server().app;
 		
@@ -27,7 +28,10 @@ import {Connection, createConnection} from "typeorm";
 		});
 
 		server.on('close', () => {
-            connection.close();
+			if (connection){
+				connection.close();
+			}
+			
 			console.log('node server closed');
 		});
 	} catch (err) {
