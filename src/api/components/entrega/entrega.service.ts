@@ -88,12 +88,14 @@ export class EntregaService implements IEntregaService {
 
   async iniciarEntrega(entrega: Entrega): Promise<Entrega> {
     
-    if (!entrega.produto){
+    if (!entrega.idPedido){
       throw new DomainError(DomainErrorCode.ProdutoNaoInformado, "O produto da entrega não foi informado.");
     }
     
     entrega.status = EntregaStatus.Iniciada;
     entrega.dataPrevistaEntrega = this.calcularDataPrevistaEntrega(new Date());
+    entrega.dataEntradaEstoque = new Date();
+    
     const entregaRetorno = await this.entregaRep.save(entrega);
 
     await this.etapaRep.save({

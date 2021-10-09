@@ -1,5 +1,5 @@
 {
-	"spec": ["./build/api/components/**/*.spec.js"],
+	"spec": ["./build/src/api/components/**/*.spec.js"],
 	"timeout": 5000
 }
 

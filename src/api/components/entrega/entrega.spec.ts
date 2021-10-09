@@ -1,4 +1,4 @@
-import { assert, expect } from "chai";
+import {  expect } from "chai";
 import { TestFactory } from "../../../test/factory";
 import { Entrega, EntregaStatus } from "../../../entity/Entrega";
 import { Armazem } from "../../../entity/Armazem";
@@ -12,7 +12,7 @@ describe("Testando o componente Entrega", () => {
     cliente: new Cliente(1),
     enderecoDestinatario: "Rua dos testes",
     nomeDestinatario: "Destinatário de Teste",
-    produto: "produto de teste",
+    idPedido: 12,
   };
   before((done) => {
     factory.init().then(done);

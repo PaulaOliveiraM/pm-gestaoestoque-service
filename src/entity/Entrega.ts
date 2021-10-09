@@ -39,12 +39,16 @@ export class Entrega {
     status?: string;
 
     @Column()
-    produto: string;
+    idPedido: number;
 
     @CreateDateColumn({unique: false})
     dataPrevistaEntrega?: Date;
 
     @CreateDateColumn({unique: false})
-    dataEntrega?: Date;   
+    dataEntrega?: Date; 
+    
+    @CreateDateColumn({unique: false})
+    dataEntradaEstoque?: Date; 
+    
 
 }

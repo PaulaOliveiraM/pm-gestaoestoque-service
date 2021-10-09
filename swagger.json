@@ -189,8 +189,8 @@
         "enderecoDestinatario": {
           "type": "string"
         },
-        "produto": {
-          "type": "string"
+        "idPedido": {
+          "type": "number"
         },
         "cliente": {
           "type": "object",
@@ -318,13 +318,16 @@
         "status": {
           "type": "string"
         },
-        "produto": {
-          "type": "string"
+        "idPedido": {
+          "type": "number"
         },
         "dataPrevistaEntrega": {
           "type": "date"
         },
         "dataEntrega": {
+          "type": "date"
+        },
+        "dataEntradaEstoque": {
           "type": "date"
         }
       }

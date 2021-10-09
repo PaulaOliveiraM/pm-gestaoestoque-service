@@ -20,7 +20,7 @@ export class EntregaRoutes implements IComponentRoutes<EntregaController> {
       "/entrada",
       body("armazem").exists(),
       body("cliente").exists(),
-      body("produto").exists(),
+      body("idPedido").exists(),
       body("nomeDestinatario").exists(),
       body("enderecoDestinatario").exists(),
       (req, res, next) => this.controller.iniciarEntrega(req, res, next)
